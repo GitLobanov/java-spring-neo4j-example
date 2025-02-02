@@ -178,9 +178,9 @@ We will use Docker Compose to run Neo4j in a container. Below is the docker-comp
 ### Create `docker-compose.yml`
 Create a file named docker-compose.yml in the root directory of your project and add the following content:
 
-```yaml
-version: '3.8'
+> The file is here -> [docker-compose.yaml](docker-compose.yaml) 
 
+```yaml
 services:
   neo4j:
     image: neo4j:5.9.0
@@ -191,42 +191,57 @@ services:
     environment:
       NEO4J_AUTH: neo4j/password  # Default username: neo4j, password: password
       NEO4J_dbms_memory_heap_max__size: 1G  # Adjust memory usage if needed
+
     volumes:
-      - neo4j-data:/data  # Persist data
-      - neo4j-plugins:/plugins  # Persist plugins
-    restart: always
+      - neo4j-logs:/logs
+      - neo4j-config:/config
+      - neo4j-data:/data
+      - neo4j-plugins:/plugins
+    restart: unless-stopped
 
 volumes:
   neo4j-data:
   neo4j-plugins:
+  neo4j-logs:
+  neo4j-config:
 ```
 
+> For more specific about this compose go to [Official docs](https://neo4j.com/docs/operations-manual/current/docker/docker-compose-standalone/)
 ### Start Neo4j Container
 Run the following command to start the Neo4j container:
 
+``` shell
 docker-compose up -d
+```
 
-This will start Neo4j in detached mode. You can access the Neo4j browser at http://localhost:7474.
+This will start Neo4j in detached mode. You can access the Neo4j browser at 
+> http://localhost:7474.
 
+```
 Default credentials :
 Username: neo4j
 Password: password
+```
 
 Step 4: Configure Spring Boot Application
 Update the application.properties file in your Spring Boot project to connect to the Neo4j instance running in Docker:
 
+```
 spring.neo4j.uri=bolt://localhost:7687
 spring.neo4j.authentication.username=neo4j
 spring.neo4j.authentication.password=password
-
+```
 
 Step 5: Build and Run the Spring Boot Application
 
 Build the Project :
-mvn clean install
+`mvn clean install`
 
 Run the Application :
-mvn spring-boot:run
+`mvn spring-boot:run`
 
 Step 6: Access API Documentation
 Once the application is running, you can access the Swagger UI for API documentation at:
+
+> http://localhost:8085/swagger-ui.html
+-  Or change port [here](src/main/resources/application.properties) if you want

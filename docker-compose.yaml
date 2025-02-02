@@ -1,0 +1,25 @@
+services:
+  neo4j:
+    image: neo4j:5.9.0
+    container_name: neo4j-container
+    ports:
+      - "7474:7474"  # HTTP port for Neo4j Browser
+      - "7687:7687"  # Bolt port for database connections
+    environment:
+      NEO4J_AUTH: neo4j/password  # Default username: neo4j, password: password
+      NEO4J_dbms_memory_heap_max__size: 1G  # Adjust memory usage if needed
+      NEO4J_dbms_default__database: scientific-research # Specify active database
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+    volumes:
+      - neo4j-logs:/logs
+      - neo4j-config:/config
+      - neo4j-data:/data
+      - neo4j-plugins:/plugins
+      - ./init-db.cql:/docker-entrypoint-initdb.d/init-db.cql # init to create own database
+    restart: unless-stopped
+
+volumes:
+  neo4j-data:
+  neo4j-plugins:
+  neo4j-logs:
+  neo4j-config:
